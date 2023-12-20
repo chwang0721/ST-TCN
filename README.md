@@ -10,7 +10,7 @@ Code for DASFAA 2024 submission 1026: "Flexible Contact Correlation Learning on 
 ### Preprocessing
 - Step1: Download data from https://www.cs.rutgers.edu/~dz220/data.html.
 - Step2: Put the data file in <tt>../datasets/sz/</tt>, and unzip it as <tt>TaxiData.txt</tt>.
-- Step3: Run preprocessing by
+- Step3: Run
 ```
 mkdir -p data/sz
 python preprocess_sz.py
