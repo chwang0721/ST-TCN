@@ -11,9 +11,9 @@ from utils import load_network
 
 class Trainer:
     def __init__(self, train_loader, test_loader, embedding_size, device,
-                 dataset, lr, lat_grid_num, lng_grid_num, top_k_num, score):
+                 dataset, lr, lat_grid_num, lng_grid_num, contact_factor, score):
 
-        self.model = ContactNet(embedding_size, device, top_k_num).to(device)
+        self.model = ContactNet(embedding_size, device, contact_factor).to(device)
         self.network = load_network(dataset, lat_grid_num, lng_grid_num).to(device)
 
         self.crit = nn.MSELoss()
@@ -23,9 +23,9 @@ class Trainer:
         self.train_loader = train_loader
         self.test_loader = test_loader
 
-        self.model_path = f"models_pth/model_{dataset}_{top_k_num}_{score}.pth"
-        self.train_log_path = f"logs/train_log_{dataset}_{top_k_num}_{score}.log"
-        self.test_log_path = f"logs/test_log_{dataset}_{top_k_num}_{score}.log"
+        self.model_path = f"models_pth/model_{dataset}_{contact_factor}_{score}.pth"
+        self.train_log_path = f"logs/train_log_{dataset}_{contact_factor}_{score}.log"
+        self.test_log_path = f"logs/test_log_{dataset}_{contact_factor}_{score}.log"
 
         self.device = device
 

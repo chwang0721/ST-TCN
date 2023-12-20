@@ -22,11 +22,11 @@ def main():
         val_trajs = np.load(f'./data/{args.dataset}/val_trajs.npy', allow_pickle=True)
         val_trajs_len = len(val_trajs)
 
-        train_data = np.load(f'./data/{args.dataset}/{args.score}/train_pairs_{args.top_k_num}.npy')
-        val_data = np.load(f'./data/{args.dataset}/{args.score}/val_pairs_{args.top_k_num}.npy')
-        ground_truth = np.load(f'./data/{args.dataset}/{args.score}/val_gt_{args.top_k_num}.npy')
+        train_data = np.load(f'./data/{args.dataset}/{args.score_type}/train_pairs_{args.contact_factor}.npy')
+        val_data = np.load(f'./data/{args.dataset}/{args.score_type}/val_pairs_{args.contact_factor}.npy')
+        ground_truth = np.load(f'./data/{args.dataset}/{args.score_type}/val_gt_{args.contact_factor}.npy')
 
-        collate_fn_train = collater_train(train_trajs, args.top_k_num)
+        collate_fn_train = collater_train(train_trajs, args.contact_factor)
         collate_fn_val = collater_test(val_trajs)
 
         train_data = MyDataset(train_data)
@@ -38,12 +38,12 @@ def main():
                                 collate_fn=collate_fn_val, num_workers=20)
 
         Trainer_contact = Trainer(train_loader, val_loader, args.embedding_size, args.device,
-                                  args.dataset, args.lr, lat_grid_num, lng_grid_num, args.top_k_num, args.score)
+                                  args.dataset, args.lr, lat_grid_num, lng_grid_num, args.contact_factor, args.score_type)
 
         hr = 0
         logger = get_logger(Trainer_contact.train_log_path)
         logger.info('Start training!')
-        logger.info(f'Number of points used to calculate the score: {args.top_k_num}')
+        logger.info(f'Number of points used to calculate the score: {args.contact_factor}')
 
         for epoch in range(args.epochs):
             loss = Trainer_contact.train()
@@ -58,8 +58,8 @@ def main():
     elif args.mode == 'test':
 
         test_trajs = np.load(f'./data/{args.dataset}/test_trajs.npy', allow_pickle=True)
-        test_data = np.load(f'./data/{args.dataset}/{args.score}/test_pairs_{args.top_k_num}.npy')
-        ground_truth = np.load(f'./data/{args.dataset}/{args.score}/test_gt_{args.top_k_num}.npy')
+        test_data = np.load(f'./data/{args.dataset}/{args.score_type}/test_pairs_{args.contact_factor}.npy')
+        ground_truth = np.load(f'./data/{args.dataset}/{args.score_type}/test_gt_{args.contact_factor}.npy')
         test_trajs_len = len(test_trajs)
 
         test_data = MyDataset(test_data)
@@ -71,11 +71,11 @@ def main():
         train_loader = None
 
         Trainer_contact = Trainer(train_loader, test_loader, args.embedding_size, args.device, args.dataset, args.lr,
-                                  lat_grid_num, lng_grid_num, args.top_k_num, args.score)
+                                  lat_grid_num, lng_grid_num, args.contact_factor, args.score_type)
 
         logger = get_logger(Trainer_contact.test_log_path)
         logger.info('Start testing!')
-        logger.info(f'Number of points used to calculate the score: {args.top_k_num}')
+        logger.info(f'Number of points used to calculate the score: {args.contact_factor}')
 
         Trainer_contact.model.load_state_dict(torch.load(Trainer_contact.model_path))
         hr_test(Trainer_contact, test_trajs_len, ground_truth, logger)

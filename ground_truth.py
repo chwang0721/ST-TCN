@@ -45,17 +45,17 @@ def st_dist(traj_a, traj_b, threshold_d, threshold_t):
             score_a = np.max(dist, axis=1)
             score_b = np.max(dist, axis=0)
 
-            indice_a = np.argsort(-score_a)[:args.top_k_num]
-            indice_b = np.argsort(-score_b)[:args.top_k_num]
+            indice_a = np.argsort(-score_a)[:args.contact_factor]
+            indice_b = np.argsort(-score_b)[:args.contact_factor]
 
             score_a = score_a[indice_a]
             score_b = score_b[indice_b]
 
-            if args.score == 's_t':
+            if args.score_type == 's_t':
                 score = (np.mean(score_a) + np.mean(score_b)) / 2
-            elif args.score == 's_h':
+            elif args.score_type == 's_h':
                 score = min(np.min(score_a), np.min(score_b))
-            elif args.score == 's_l':
+            elif args.score_type == 's_l':
                 theta = 2 * np.exp(-1)
                 score = (len(score_a[score_a >= theta]) + len(score_b[score_b >= theta])) / (
                         len(score_a) + len(score_b))
@@ -189,7 +189,7 @@ def main():
                      grid_index=train_grid_index), train_idxs)
     train_pairs = merge('train')
     print('Train pairs num:', len(train_pairs))
-    np.save('./data/{}/{}/train_pairs_{}.npy'.format(args.dataset, args.score, args.top_k_num), train_pairs)
+    np.save('./data/{}/{}/train_pairs_{}.npy'.format(args.dataset, args.score_type, args.contact_factor), train_pairs)
 
     for idx in range(args.cpu_num):
         val_idxs[idx] = np.append(val_idxs[idx], idx)
@@ -197,8 +197,8 @@ def main():
                      time_index=val_time_index, grid_index=val_grid_index), val_idxs)
     val_pairs, val_gt = merge('val')
     print('Validation pairs num:', len(val_pairs))
-    np.save('./data/{}/{}/val_gt_{}.npy'.format(args.dataset, args.score, args.top_k_num), val_gt)
-    np.save('./data/{}/{}/val_pairs_{}.npy'.format(args.dataset, args.score, args.top_k_num), val_pairs)
+    np.save('./data/{}/{}/val_gt_{}.npy'.format(args.dataset, args.score_type, args.contact_factor), val_gt)
+    np.save('./data/{}/{}/val_pairs_{}.npy'.format(args.dataset, args.score_type, args.contact_factor), val_pairs)
 
     for idx in range(args.cpu_num):
         test_idxs[idx] = np.append(test_idxs[idx], idx)
@@ -206,8 +206,8 @@ def main():
                      time_index=test_time_index, grid_index=test_grid_index), test_idxs)
     test_pairs, test_gt = merge('test')
     print('Test pairs num:', len(test_pairs))
-    np.save('./data/{}/{}/test_gt_{}.npy'.format(args.dataset, args.score, args.top_k_num), test_gt)
-    np.save('./data/{}/{}/test_pairs_{}.npy'.format(args.dataset, args.score, args.top_k_num), test_pairs)
+    np.save('./data/{}/{}/test_gt_{}.npy'.format(args.dataset, args.score_type, args.contact_factor), test_gt)
+    np.save('./data/{}/{}/test_pairs_{}.npy'.format(args.dataset, args.score_type, args.contact_factor), test_pairs)
 
     pool.close()
     pool.join()

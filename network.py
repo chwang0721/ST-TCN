@@ -120,7 +120,7 @@ class Co_Att(nn.Module):
 
 
 class ContactNet(nn.Module):
-    def __init__(self, embedding_size, device, top_k_num):
+    def __init__(self, embedding_size, device, contact_factor):
         super(ContactNet, self).__init__()
 
         self.co_attention = Co_Att(embedding_size)
@@ -139,7 +139,7 @@ class ContactNet(nn.Module):
         self.softmax = nn.Softmax(dim=-1)
 
         self.e_size = embedding_size
-        self.top_k_num = top_k_num
+        self.contact_factor = contact_factor
         self.mode = 'test'
 
     def padding_mask(self, inp):
@@ -185,16 +185,16 @@ class ContactNet(nn.Module):
         traj_arange = torch.arange(batch_size).unsqueeze(-1)
 
         if self.mode == 'train':
-            indices_a = self.soft_sort(scores_ab_max)[:, :self.top_k_num]
-            indices_b = self.soft_sort(scores_ba_max)[:, :self.top_k_num]
+            indices_a = self.soft_sort(scores_ab_max)[:, :self.contact_factor]
+            indices_b = self.soft_sort(scores_ba_max)[:, :self.contact_factor]
             att_ab = emb_a[traj_arange, torch.argmax(indices_a, dim=-1)]
             att_ba = emb_b[traj_arange, torch.argmax(indices_b, dim=-1)]
 
             return self.FFN(att_ab.mean(1)), self.FFN(att_ba.mean(1)), indices_a, indices_b
 
         elif self.mode == 'test':
-            indices_a = torch.argsort(-scores_ab_max, dim=-1)[:, :self.top_k_num]
-            indices_b = torch.argsort(-scores_ba_max, dim=-1)[:, :self.top_k_num]
+            indices_a = torch.argsort(-scores_ab_max, dim=-1)[:, :self.contact_factor]
+            indices_b = torch.argsort(-scores_ba_max, dim=-1)[:, :self.contact_factor]
             att_ab = emb_a[traj_arange, indices_a]
             att_ba = emb_b[traj_arange, indices_b]
 
