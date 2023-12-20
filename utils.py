@@ -79,7 +79,7 @@ def test_method(all_dist, test_trajs_len, ground_truth):
             indices = np.argsort(-dist)
 
             i_j = i_j_dist[:, 1][indices]
-            top_1_j, top_5_j, top_10_j, top_20_j = i_j[:1], i_j[:5], i_j[:10], i_j[:20]
+            top_1_j, top_5_j, top_10_j = i_j[:1], i_j[:5], i_j[:10]
 
             gt_i = ground_truth[ground_truth[:, 0] == i]
             if len(gt_i) > 0:
