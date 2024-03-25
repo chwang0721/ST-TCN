@@ -1,5 +1,5 @@
 # ST-TCN
-Code for DASFAA 2024 submission 1026: "Flexible Contact Correlation Learning on Spatio-Temporal Trajectories"
+Code for DASFAA 2024 "Flexible Contact Correlation Learning on Spatio-Temporal Trajectories"
 ### Requirements
 - torch
 - torch_geometric
