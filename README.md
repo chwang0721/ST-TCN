@@ -31,3 +31,14 @@ python main.py --dataset sz --contact_factor 3 --score_type s_t --lr 3e-4 --mode
 ```
 python main.py --dataset sz --contact_factor 3 --score_type s_t --mode test
 ```
+### Citation
+```
+@inproceedings{wang2024flexible,
+  title={Flexible Contact Correlation Learning on Spatio-Temporal Trajectories},
+  author={Wang, Chenhao and Chen, Lisi and Feng, Shanshan and Shang, Shuo},
+  booktitle={International Conference on Database Systems for Advanced Applications},
+  pages={152--168},
+  year={2024},
+  organization={Springer}
+}
+```
